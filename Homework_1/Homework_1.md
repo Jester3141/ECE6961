@@ -30,9 +30,7 @@ TODO
 
 ## Problem 3
 
-Consider the same two-path example as in problem 2 with d = 2 km and the receiver at 1.5 km from the
-transmitter moving at velocity 60 km/hr away from the transmitter. The carrier frequency is 900 MHz.
-
+Consider the same two-path example as in problem 2 with d = 2 km and the receiver at 1.5 km from the transmitter moving at velocity 60 km/hr away from the transmitter. The carrier frequency is 900 MHz.
 
 ### (a) Plot in MATLAB the magnitudes of the taps of the discrete-time baseband channel at a fixed time t = 1. Give a few plots for several bandwidths W = 10 KHz, 100 KHz, 1 MHz, and 3 MHz so as to exhibit both flat and frequency-selective fading. As described in the book, you may assume that the path loss is given by $(r + vt)^{-1}$ for the direct path and by $(2d − r − vt)^{−1}$ for the reflected path.
 
