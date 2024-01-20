@@ -2,9 +2,6 @@
 
 ## Definitions
 
-OFDMA
-: Orthogonal Frequency Division Multiple Access
-
 MIMO
 : Multiple Input and Multiple Output
 
@@ -14,23 +11,37 @@ Beamforming
 Signal Bandwidth
 : $W$
 
+Delay
+: $\tau$ The time it takes for a signal to travel from a to b.
+
+Carrier Frequency
+: $f_c$
+
 Delay Spread
-: TODO
+: The spread of delays in a system defined as $T_d = T_{ds} = \tau_{max} - \tau_{min}$.  This depends on the environment.  In addition, the lower the frequency, the higher the delay spread.  This is because higher frequencies attenuate more over distance.  In an urban setting a signal at 2g is in the order of a few microseconds ($\mu s$). In an indoor setting, that would be smaller on the order of a few undred of nanoseconds ($ns$)
+
+Carrier Frequency
+: $f_c$
 
 Coherence Bandwidth
-: TODO
+: $W_c \approxeq \frac{1}{t_d}$  Indoor settings will give a larger cohererence bandwidth.  Sometime this is timed by a constand less than zero to get a tighter channel.  Usually in the order of a couple of hundred hertz.
 
-Frequency Flat Fading
-: TODO
 
-Frequency Selective Fading
-: TODO
+
+Frequency Flat
+: This refers to a signal where the channel bandwidth is small enough that the amplitude is approximately constant across it's frequency range.  
+
+Frequency Selective
+: This refers to a signal where the channel bandwidth is large enough that you get variations in amplitude over it's frequency range.
+
+Coherence Time
+: $T_c$ The timescale over which time your channel is roughly the same. $T_c \approx \frac{1}{f_m}$.  Often this is multiplied by 0.1 constant.
 
 Fast Fading
 : TODO
 
 Slow Fading
-: TODO
+: Slow fading where your channel doesn't change during the duration of a symbol.
 
 Doppler
 : TODO
@@ -49,6 +60,13 @@ Channel Impulse Response
 
 Multipath
 : a signal that arrives at the mobile user through multiple paths  (signal reflecting off of things)
+
+OFDMA
+: Orthogonal Frequency Division Multiple Access.  Bandwidth used is wide. 1 - 2 Mhz.  This bandwidth is divided into smaller channels 
+
+Maximum Dopper Shift
+: $\displaystyle f_m = f_c \frac{v}{c} = \frac{v}{\lambda_c}$ where $f_c$ is the carrier frequency, $v$ is the speed of the mobile, and $c$ is the speed of light.
+
 
 ## Wireless modes
 
@@ -160,6 +178,7 @@ $|H(f)| = \sqrt{\beta_1^2 + 2\beta_1\beta_2cos2\pi f\tau + \beta_2^2cos^2(2\pi f
 Since $x(cos^2y) + x(sin^2y) = x$ we can simplify the final 2 terms.
 
 $|H(f)| = \sqrt{\beta_1^2 + 2\beta_1\beta_2cos2\pi f\tau + \beta_2^2}$  
+
 Keep in mind we are still looking at the magnitude of the frequency response.
 In the following diagram we are ploting from where cos is 1 to where cos is -1.
 ![Multipath Diagram](images/Channel_Modeling_magnitude_of_frequency_response.png)
@@ -175,6 +194,122 @@ If however, we chose a bandwidth that has a very narrow frequency range, we can 
 Therefore if the signal bandwidth $W \ll \frac{1}{\tau}$ it can be treated as a a frequency flat channel (we will see constant amplitude fluctuation)
 
 If the $W \gg \frac{1}{\tau}$ then we will see severe frequency distortion and will see frequency selective fading.
+
+-------
+
+For example for 4G LTE (OFDMA), the total bandwidth is large enough that we would see frequency selective fading.  To avoid this we divide the channel in to small frequency chunks (sub-carriers).
+
+$f_k = f_c + k\Delta f$
+
+$f_k$ is the carrier frequency of the kth sub-carrier
+$f_c$ is the carrier frequency (Ex: 2Ghz). $k$ is the index of the sub-carrier.
+$\Delta f$ is the with of each sub-carrier chunk.
+
+Lets pick a $T_d \approx 4\mu s$.
+
+Then $W_c \approx \frac{1}{T_d} \approx \frac{1}{4 \mu s} = 250 Khz$
+
+If we use the correlation consant of 0.5, then this would become:
+
+Then $W_c \approx \frac{0.5}{T_d} \approx \frac{0.5}{4 \mu s} = 125 Khz$
+
+From the 4G LTE standard, the $\Delta f = 15K$
+
+$15Khz \ll 125Khz$, therefore each sub channel would be frequency flat.
+
+--------
+
+Using the previously derived formula, we did an analysis assuming that $\tau$ is fixed (no movement in system).  Now we are going to let $\tau$ change.  We are going to assume here that we are operating over a very narrow band channel. 
+
+$|H(f)| = \sqrt{\beta_1^2 + 2\beta_1\beta_2cos2\pi f\tau + \beta_2^2}$  
+
+The signal we are transmitting is 
+
+$S(t) = cos(2\pi f_ct)$
+
+We want to see the frequency reponse at that carrier frequency $f_c$, so $|H(f)| \Rightarrow |H(f_c)| \therefore$
+
+$|H(f_c)| = \sqrt{\beta_1^2 + 2\beta_1\beta_2cos2\pi f\tau + \beta_2^2}$
+
+We are now going to assume that $f_c$ is fixed and we are going to vary $\tau$ to see how it plays into this.  Here is the plot:
+
+![Multipath Diagram](images/Channel_Modeling_tau_changing.png)
+
+We can see here that there are significant changes in $|H(f_c)|$ for changes in $\tau$ of the order of $\frac{1}{f_c}$+
+
+If $\tau$ changes in $\frac{1}{f_c}$ and $\Delta d$ is the changes in path length.
+
+Then $\displaystyle\Delta t \sim \frac{1}{f_c}$
+
+and $\displaystyle\Delta d \sim \frac{c}{f_c} = \lambda_c$   (where $c$ is the speed of light and $\lambda_c$ is the wavelength)
+
+Assume that the mobile is moving at the speed of v.  How long does it take for the mobile to move wavelengths.
+
+If you move $\displaystyle\frac{\lambda_c}{v}$ the channel will change significantly.  This relates to doppler.
+
+$\displaystyle f_m = f_c \frac{v}{c} = \frac{v}{\lambda_c}$
+
+$T_c \approx \frac{1}{f_m}$
+
+For a concrete example,
+
+if $v=70 Mph = 31 m/s$
+To get $\lambda_c$ for $f_c = 2G$
+$\displaystyle\lambda_c = \frac{c}{f_c} = \frac{3 \times 10^8}{2 \times 10^9} = 0.15 meter$
+
+$\displaystyle f_m  = \frac{v}{\lambda_c} = \frac{31 m/s}{0.15m} = 206Hz$ doppler shift
+
+$T_c = \frac{0.1}{f_m} = \frac{0.1}{206Hz} = 485 \mu s$ (where 0.1 is our chosen constant)
+
+You don't want the channel to change during a symbol.  
+In 4G LTE, the OFDM symbol duration is $66.75 \mu s + 4.7 \mu s = 71.3 \mu s$ The 2nd part $4.7 \mu s$ is the delay spread$
+ This constitues slow fading where your channel doesn't change during the duration of a symbol.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
