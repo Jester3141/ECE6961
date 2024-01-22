@@ -376,7 +376,7 @@ $G(d,\theta) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n^2(d,\theta)$
 
 Here $g(d,\theta)$ is the root of the avarage channel power gain which takes care of the large scale variations. The $h_b(\tau)$ remains as before to be:
 
-$h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{-j2\phi_n(d,\theta)}\delta(\tau-\tau_n(d,\theta))$
+$h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{j\phi_n(d,\theta)}\delta(\tau-\tau_n(d,\theta))$
 
 Because of the term in front this is now a scaled version.  We define $\alpha$ to be
 
@@ -384,7 +384,7 @@ $\displaystyle \alpha_n(d,\theta) = \frac{\beta_n(d,\theta)}{g(d,\theta)}$
 
 Which makes our final formula
 
-$h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\alpha_n(d,\theta)e^{-j2\phi_n(d,\theta)}\delta(\tau-\tau_n(d,\theta))$
+$h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\alpha_n(d,\theta)e^{j\phi_n(d,\theta)}\delta(\tau-\tau_n(d,\theta))$
 
 We do the power scaling so that 
 
@@ -398,7 +398,7 @@ $h(\tau) \Rightarrow h(t,\tau)$
 
 This makes our complex baseband function:
 
-$h_b(t,\tau) = \displaystyle\sum_{n=1}^{n(t)}\alpha_n(t)e^{-j2\phi_n(t)}\delta(\tau-\tau_n(t))$
+$h_b(t,\tau) = \displaystyle\sum_{n=1}^{n(t)}\alpha_n(t)e^{j\phi_n(t)}\delta(\tau-\tau_n(t))$
 
 $x(t)$ is the tranmit signal
 $y(t)$ is the rx signal
