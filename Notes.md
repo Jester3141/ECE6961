@@ -24,9 +24,7 @@ Carrier Frequency
 : $f_c$
 
 Coherence Bandwidth
-: $W_c \approxeq \frac{1}{t_d}$  Indoor settings will give a larger cohererence bandwidth.  Sometime this is timed by a constand less than zero to get a tighter channel.  Usually in the order of a couple of hundred hertz.
-
-
+: $W_c \approx \frac{1}{t_d}$  Indoor settings will give a larger cohererence bandwidth.  Sometime this is timed by a constand less than zero to get a tighter channel.  Usually in the order of a couple of hundred hertz.
 
 Frequency Flat
 : This refers to a signal where the channel bandwidth is small enough that the amplitude is approximately constant across it's frequency range.  
@@ -38,19 +36,19 @@ Coherence Time
 : $T_c$ The timescale over which time your channel is roughly the same. $T_c \approx \frac{1}{f_m}$.  Often this is multiplied by 0.1 constant.
 
 Fast Fading
-: TODO
+: Fast fading is where your channel changes significantly during the duration of a symbol.
 
 Slow Fading
-: Slow fading where your channel doesn't change during the duration of a symbol.
+: Slow fading is where your channel doesn't change during the duration of a symbol.
 
 Doppler
-: TODO
-
-Passband
-: TODO
+: A change in the received frequency due to movement in the system.
 
 Baseband
-: TODO
+: A signal that can be sent to the receiver without any frequency shifting.  
+
+Passband
+: A signal that must first be shifted to a higher frequency for transmission.  The receiver will have to shift the frequency back to the original frequency for processing
 
 Impulse Response
 : the output of a system when presented with a brief input signal called an impulse
@@ -66,6 +64,21 @@ OFDMA
 
 Maximum Dopper Shift
 : $\displaystyle f_m = f_c \frac{v}{c} = \frac{v}{\lambda_c}$ where $f_c$ is the carrier frequency, $v$ is the speed of the mobile, and $c$ is the speed of light.
+
+Phase Shift
+: $\phi_n = -2\pi f_c \tau_n$
+
+Small Scale Variation
+: Refers to movement on the order of a few wavelengths $\lambda_c$.  In this case, $N(d,\theta), \beta_n(d,\theta), \tau_n(d,\theta) \approx constant$.
+: But this gets multiplied by $f_c$ so the phase $\phi_n$ can change significantly.  
+: Will be the focus of this class.
+
+Large Scale Variation
+: Refers to movement of orders $\gg \lambda_c$  This results in significant chagnes in $N(d,\theta), \beta_n(d,\theta), \tau_n(d,\theta)$.  Usually taken care of by doing things like power control.
+: Will be mostly ignored in this class.
+
+Average Channel Power Gain
+: $G(d,\theta) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n^2(d,\theta)$
 
 
 ## Wireless modes
@@ -262,37 +275,141 @@ $\displaystyle f_m  = \frac{v}{\lambda_c} = \frac{31 m/s}{0.15m} = 206Hz$ dopple
 $T_c = \frac{0.1}{f_m} = \frac{0.1}{206Hz} = 485 \mu s$ (where 0.1 is our chosen constant)
 
 You don't want the channel to change during a symbol.  
-In 4G LTE, the OFDM symbol duration is $66.75 \mu s + 4.7 \mu s = 71.3 \mu s$ The 2nd part $4.7 \mu s$ is the delay spread$
+In 4G LTE, the OFDM symbol duration is $66.75 \mu s + 4.7 \mu s = 71.3 \mu s$ The 2nd part $4.7 \mu s$ is the delay spread.
  This constitues slow fading where your channel doesn't change during the duration of a symbol.
 
+-------
+
+For the underwanter channel, the paper said they used a Bandwidth $B = 8Khz$ and a carrier frequency of $f_c = 24Khz$, and a guard interval of $T_g = 25ms$.  They then used 2 different ways of splitting the bandwidth.
+
+|   K  | $\Delta f (Hz)$ | OFDM Duration (ms)|
+| ---- | --------------- | ----------------- |
+| 1024 | 7.81            | 128               |
+| 2048 | 3.91            | 256               |
+
+$f_c = 24kHz$
+$c = 1500m/s$  (Note we didn't us the speed of light because this is how fast the sound waves propagate underwater )
+$v = 2 knots/s = 1.03m/s$
+$t_d = 25ms$ (this was given by the associate researcher)
+
+We can look at the maximum difference in the path length by multipling $T_d \cdot c = 25ms \cdot 1500m/s = 37.5 m$
+
+$\displaystyle W_c \approx \frac{0.5}{T_d} = \frac{0.5}{25ms} = 20Hz$
+
+The underwater scenario is fast fading.  To show this we first calculate the wavelength and then the doppler shift
+
+$\displaystyle \lambda_c = \frac{c}{f_c} = \frac{1500m/s}{24000} = 6.2cm$
+
+$\displaystyle f_m  = \frac{v}{\lambda_c} = \frac{1.03m/s}{0.0062m} = 16.48Hz$
+
+We now compare our $\Delta f$ values of 7.81 and 3.91 to these.  We see that these are less than our maximum doppler shift.  Therefore this is a fast fading channel.
+ 
 
 
+## Complex baseband channel modeling
+
+Lets look at the response of a channel to a carrier modulated signal.  (ie how do we go from passband to baseband and vice versa.)
+
+Lets look at transmitting a carrier modulated singal $S(t)$
+
+$\displaystyle S(t) = a(t)cos(2\pi f_c t + 4(t))$ where $f_c$ is the passband signal frequency.  It is real valued.
+
+$S_b(t)$ is a complex valued base band signal.  IE: This is the complex baseband representation of $S(t)$
+
+$\displaystyle S(t) = \real[S_b(t)e^{j2\pi f_ct}]$
+
+So to go from the the $S_b(t)$ to the $S(t)$ represnetation you must moduleate the signal using this formula and taking the real part of it.
+
+$\displaystyle S_b(t) = a(t)e^{j4(t)}$ is the closed form expression
+
+So when we modulate using $e^{j2\pi f_c t}$  (multiplying both sides of the above equation we get )
+
+$\displaystyle S_b(t)e^{j2\pi f_c t} = a(t)e^{j4(t)}e^{j2\pi f_c t}$ Which simplifies to..
+$\displaystyle S_b(t)e^{j2\pi f_c t} = a(t)e^{j(2\pi f_c t + 4(t))}$   We then get the real part of the signal
+
+$\displaystyle \real[S_b(t)e^{j2\pi f_c t}] = \real[a(t)e^{j(2\pi f_c t + 4(t))}]$
+$\displaystyle \real[S_b(t)e^{j2\pi f_c t}] = a(t)cos(2\pi f_c t + 4(t))$
+
+So the question is, for a tranmitted passband signal $S(t)$ going through $h(\tau)$ to get the received signal $r(t)$...
+
+![Multipath Diagram](images/Baseband_to_Passband_impulse_response.png)
+
+How does that relate to the tranmitted baseband signal $S_b(t)$ going through $h_b(\tau)$ to get the received signal $r_B(t)$...
+
+$h(\tau) \ne h_b(\tau)$ because of the carrier modulation
+
+$r(t) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)S(t-\tau_n(d,\theta))$  This is the intuitive multipath carrier model that captures the effect of the multipath..
+
+$= \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)\real[S_b(t-\tau_n(d,\theta))e^{j2\pi f_c (t\tau_n(d,\theta))}]$
+
+Here we do some funkyness.  $\beta_n(d,\theta)$ is real valued.  We can rewrite the equation as 
+
+$ = \displaystyle\real[\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{-j2\pi f_c (t\tau_n(d,\theta))}S_b(t-\tau_n(d,\theta))e^{j2\pi f_c (t\tau_n(d,\theta))}]$
+
+In this equation, the $\beta_n(d,\theta)e^{-j2\pi f_c (t-\tau_n(d,\theta))}S_b(t-\tau_n(d,\theta))$ represents the baseband signal $r_b(t)$ and the $e^{j2\pi f_c (t\tau_n(d,\theta))}$ is the modulation, and $e^{-j2\pi f_c (t-\tau_n(d,\theta))}$ is the phase shift.
 
 
+$h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{-j2\pi f_c (t-\tau_n(d,\theta))}\delta(\tau-\tau_n(d,\theta))$
+
+The phase shift $e^{-j2\pi f_c (t\tau_n(d,\theta))}$ is determined by the carrier frequency $f_c$ and the delay $\tau_n$
+
+----------
+
+For a fixed location is is a LTI (Linear Time Invariant) system.
+As $(d,\theta)$ varies with time, we get a LTV (Linear Time Variant) system.
+
+Small scale changes to movement on the order of a few wavelengths $\lambda_c$.  In this case, $N(d,\theta), \beta_n(d,\theta), \tau_n(d,\theta) \approx constant$.
+: But this gets multiplied by $f_c$ so the phase $\phi_n$ can change significantly.
+
+$\therefore h_b(\tau)$ can change significantly even with small scale changes.
 
 
+Large Scale changes on the order $\gg \lambda_c$  This results in significant chagnes in $N(d,\theta), \beta_n(d,\theta), \tau_n(d,\theta)$.  Usually taken care of by doing things like power control. This will be mostly ignored in this class.
 
+We seperate these 2 scales (Separation of scale)
+That is why we later on will always assume that the sum of the path gain is 1.  We normalize it. 
 
+Average Channel Power Gain is given by the forumula:
+$G(d,\theta) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n^2(d,\theta)$
 
+![Multipath Diagram](images/Sepration_of_scale_of_variation.png)
 
+Here $g(d,\theta)$ is the root of the avarage channel power gain which takes care of the large scale variations. The $h_b(\tau)$ remains as before to be:
 
+$h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{-j2\phi_n(d,\theta)}\delta(\tau-\tau_n(d,\theta))$
 
+Because of the term in front this is now a scaled version.  We define $\alpha$ to be
 
+$\displaystyle \alpha_n(d,\theta) = \frac{\beta_n(d,\theta)}{g(d,\theta)}$
 
+Which makes our final formula
 
+$h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\alpha_n(d,\theta)e^{-j2\phi_n(d,\theta)}\delta(\tau-\tau_n(d,\theta))$
 
+We do the power scaling so that 
 
+$\displaystyle\sum_{n=1}^{n(d,\theta)}\alpha_n(d,\theta) = 1$ for small scale only.
 
+-----
 
+NOTE: Notation Change.  Gettting rid of $(d,\theta)$ from the formulas.  When we do this we go from
 
+$h(\tau) \Rightarrow h(t,\tau)$
 
+This makes our complex baseband function:
 
+$h_b(t,\tau) = \displaystyle\sum_{n=1}^{n(t)}\alpha_n(t)e^{-j2\phi_n(t)}\delta(\tau-\tau_n(t))$
 
+$x(t)$ is the tranmit signal
+$y(t)$ is the rx signal
 
+Therefore in this Linear Time Varying model:
 
+$y(t) = \displaystyle \int_{-\inf}^{inf}h(t,\tau)x(t-\tau)d\tau$
 
+This is a convolution of $h(t,\tau)$ and $x(t-\tau)$
 
-
+$h(t,\tau)$ is the response of the channel at time $t$ when an impulse was transmitted at time $t-\tau$ before.  (when the impulse was transmitted $\tau$ units before.)
 
 
 
