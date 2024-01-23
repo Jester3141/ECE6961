@@ -334,24 +334,24 @@ So the question is, for a tranmitted passband signal $S(t)$ going through $h(\ta
 
 ![Multipath Diagram](images/Baseband_to_Passband_impulse_response.png)
 
-How does that relate to the tranmitted baseband signal $S_b(t)$ going through $h_b(\tau)$ to get the received signal $r_B(t)$...
+How does that relate to the transmitted baseband signal $S_b(t)$ going through $h_b(\tau)$ to get the received signal $r_B(t)$...
 
 $h(\tau) \ne h_b(\tau)$ because of the carrier modulation
 
 $r(t) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)S(t-\tau_n(d,\theta))$  This is the intuitive multipath carrier model that captures the effect of the multipath..
 
-$= \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)\real[S_b(t-\tau_n(d,\theta))e^{j2\pi f_c (t\tau_n(d,\theta))}]$
+$= \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)\real[S_b(t-\tau_n(d,\theta))e^{j2\pi f_c (t-\tau_n(d,\theta))}]$
 
 Here we do some funkyness.  $\beta_n(d,\theta)$ is real valued.  We can rewrite the equation as 
 
-$ = \displaystyle\real[\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{-j2\pi f_c (t\tau_n(d,\theta))}S_b(t-\tau_n(d,\theta))e^{j2\pi f_c (t\tau_n(d,\theta))}]$
+$ = \displaystyle\real[\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{-j2\pi f_c (t-\tau_n(d,\theta))}S_b(t-\tau_n(d,\theta))e^{j2\pi f_c (t-\tau_n(d,\theta))}]$
 
-In this equation, the $\beta_n(d,\theta)e^{-j2\pi f_c (t-\tau_n(d,\theta))}S_b(t-\tau_n(d,\theta))$ represents the baseband signal $r_b(t)$ and the $e^{j2\pi f_c (t\tau_n(d,\theta))}$ is the modulation, and $e^{-j2\pi f_c (t-\tau_n(d,\theta))}$ is the phase shift.
+In this equation, the $\beta_n(d,\theta)e^{-j2\pi f_c (t-\tau_n(d,\theta))}S_b(t-\tau_n(d,\theta))$ represents the baseband signal $r_b(t)$ and the $e^{j2\pi f_c (t-\tau_n(d,\theta))}$ is the modulation, and $e^{-j2\pi f_c (t-\tau_n(d,\theta))}$ is the phase shift.
 
 
 $h_b(\tau) = \displaystyle\sum_{n=1}^{n(d,\theta)}\beta_n(d,\theta)e^{-j2\pi f_c (t-\tau_n(d,\theta))}\delta(\tau-\tau_n(d,\theta))$
 
-The phase shift $e^{-j2\pi f_c (t\tau_n(d,\theta))}$ is determined by the carrier frequency $f_c$ and the delay $\tau_n$
+The phase shift $e^{-j2\pi f_c (t-\tau_n(d,\theta))}$ is determined by the carrier frequency $f_c$ and the delay $\tau_n$
 
 ----------
 
