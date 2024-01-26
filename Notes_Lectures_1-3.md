@@ -66,7 +66,7 @@ Maximum Dopper Shift
 : $\displaystyle f_m = f_c \frac{v}{c} = \frac{v}{\lambda_c}$ where $f_c$ is the carrier frequency, $v$ is the speed of the mobile, and $c$ is the speed of light.
 
 Phase Shift
-: $\phi_n = -2\pi f_c \tau_n$
+: $\phi_n(t) = -2\pi f_c \tau_n(t)$
 
 Small Scale Variation
 : Refers to movement on the order of a few wavelengths $\lambda_c$.  In this case, $N(d,\theta), \beta_n(d,\theta), \tau_n(d,\theta) \approx constant$.

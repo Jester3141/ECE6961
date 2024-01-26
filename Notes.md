@@ -15,7 +15,9 @@ Nyquist-Shannon sampling theorem
 : The theorem states that the sample rate must be at least twice the bandwidth of the signal to avoid aliasing. In practice, it is used to select band-limiting filters to keep aliasing below an acceptable amount when an analog signal is sampled or when sample rates are changed within a digital signal processing function.
 
 Sinc
-: $\displaystyle sinc x = \frac{sin x}{x}$
+: $\displaystyle sinc (x) = \frac{sin x}{x}$ **Unormalized Sinc Function**
+: $\displaystyle sinc (\tau) = \frac{sin (\pi\tau)}{\pi\tau}$ **Unormalized Sinc Function**
+![sinc](images/sinc.svg)
 
 
 
@@ -138,23 +140,68 @@ Using this back on our main function we evaluate the sinc fuction at $\tau_n$, t
 
 $y(t) = \displaystyle \sum_{l=-\infin}^{\infin} x(t-\frac{l}{W}) \sum_{n=1}^{n(t)}\alpha_n(t)e^{j\phi_n(t)} sinc(W(\tau_n-\frac{l}{W}))$
 
-The second part of the sum is the $V_l(t)$ tap.
+The second sum is the $V_l(t)$ tap.
 
 $V_l(t) = \displaystyle \sum_{n=1}^{n(t)}\alpha_n(t)e^{j\phi_n(t)} sinc(W(\tau_n-\frac{l}{W}))$
 
-Left off at 53:00
+Do all the paths contribute equally to each tap or not?  For the frequency flat case, all the paths aggregate together to affect $V_0$. For the frequency selective case, we need to look ath the sum in the $V_l(t)$ formula.  It is a summation of $n$.  Therfore all of the paths seem like they contribute equally to the nth path.  But think of the sinc term in the summation.  Think of each path.  $\tau_n$ is the delay for that path.  And your looking at a particular tap $L$ so $L$ is given.  If $\tau_n$(t) is pretty far away from that particular $\frac{l}{W}$ then that path is not going to contribute much to the path.  That is because the sinc function decays as it goes out on eather side. 
+
+![sinc](images/sinc.svg)
+
+If $\tau_n$(t) is pretty close to that particular $\frac{l}{W}$ then that path is going to be the major contributerto the path.  The sinc mask is going to peak the contributing paths for you.
+
+![sinc2](images/sinc2.png)
+
+We use the following formula for deciding if a path contributes
+
+$\displaystyle -\frac{1}{2} < W(\tau_n(t)-\frac{l}{W}) < \frac{1}{2}$
+
+Under this condition, path $n$ contributes significantly to tap $l$.
+
+Lets simplify the $W(\tau_n(t)-\frac{l}{W})$ term by dividing W by both (all) sides.
+
+$\displaystyle -\frac{1}{2W} < \tau_n(t)-\frac{l}{W} < \frac{1}{2W}$
+
+Then we can simplify further by adding $\frac{l}{W}$ to each (all) sides.
+
+$\displaystyle \frac{l}{W}-\frac{1}{2W} < \tau_n(t) < \frac{l}{W}+\frac{1}{2W}$
+
+To restate, The nth path contributes most significantly to the lth tap if it's delay $\tau_n$ falls into the window of 
+$\displaystyle [\frac{l}{W}-\frac{1}{2W}, \frac{l}{W}+\frac{1}{2W}]$
+Paths that contribute significantly to $V_l(t)$ are the ones that the sinc mask picks out.
+
+Think about $\frac{1}{W}$ as the time domain resolution.
+
+![time domain resolution](images/time_domain_resolution.png)
+
+We need a certain number of taps spaced $\frac{1}{W}$ apart between 0 and $\tau$.  The nubmer of taps $L$ that we need can be given by the formula:
+
+$\displaystyle L = \lceil\frac{\tau_{DS}}{\frac{1}{W}}\rceil = \lceil W \cdot \tau_{DS}\rceil$
+
+For example, remember IS-95 CDMA (2G) where $W=1.25MHZ$ (a frequency selective wide band channel) and $\tau_{DS} = 13\mu s$ 
+$\displaystyle L = \lceil W \cdot \tau_{DS}\rceil = \lceil 1.25MHZ \cdot 13\mu \rceil = 13  taps$
 
 
+Another example, the underwater channel.  The $\tau_{DS} = 25ms$ and $W = 8Khz$
+$\displaystyle L = \lceil W \cdot \tau_{DS}\rceil = \lceil 8KHZ \cdot 25ms \rceil = 200  taps$
 
+Though we don't necessarily use the tap delay line model in newer carrier types, it is still beneficial because it does a good job of estimating and doesn't require a lot of parameters.  Doing it in the frequency domain wold require alot more info.
 
+----
 
+If you look at one tap $V_l(t)$, will that change over time.  Specifically we are talking about tap variation.  Will that tap be consistent with what you think it should be.  Recall the formula
 
+$V_l(t) = \displaystyle \sum_{n=1}^{n(t)}\alpha_n(t)e^{j\phi_n(t)} sinc(W(\tau_n-\frac{l}{W}))$
 
+The sync part won't change much, but what will change is the $\phi_n(t)$.  Recall:
 
+$\phi_n(t) = -2\pi f_c \tau_n(t)$
 
+This is related to doppler.  Because the receiver is moving, the $\tau_n$ is changing over time in the small scale, that gets amplified by the $f_c$ term for significant changes.  This is a frequency shift because the phase is changing.
 
+Frequency Shift $ = \displaystyle\frac{\phi_n(t-\Delta t) - \phi_n(t)}{(\Delta t)(2\pi)}$  (note we wanted the frequency in Hz which is why we times the denominator by $2\pi$)
 
-
+Continued on next lecture.
 
 
 
