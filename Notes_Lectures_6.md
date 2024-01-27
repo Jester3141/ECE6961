@@ -69,6 +69,13 @@ Where $R$ is the amplitude
 We know that $V_I \sim N(0, \frac{1}{2})$ that is that it follows normal distribution.
 We also know that $V_Q \sim N(0, \frac{1}{2})$ that is that it also follows normal distribution and is independent from $V_i$.
 
+$\displaystyle \text{Normal distribution}\begin{cases}
+    \displaystyle V_I \sim N(0, \frac{1}{2}) \\
+    \displaystyle V_Q \sim N(0, \frac{1}{2})
+\end{cases}$
+
+
+
 So $(V_I, V_Q)$ is in the cartesian plane.  We are interested in the distribution of $R$ and $\theta$
 
 ![Cartisian Polar](images/cartisian_polar.png)
@@ -81,7 +88,7 @@ The joint probability distribution function (PDF) is given by $f_{V_I, V_Q}(V_I,
 
 $f_{V_I, V_Q}(V_I, V_Q) = f_{V_I}(VI)\cdot f_{V_Q}(V_Q)$
 
-Say we have a random variable $X$ that follows this random distribution $X\sim N(\mu,\sigma^2)$  Ten the probability density function is $\displaystyle f_x(x) = \frac{1}{\theta\sqrt{2\pi}} e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$
+Say we have a random variable $X$ that follows this random distribution $X\sim N(\mu,\sigma^2)$  Then the probability density function is $\displaystyle f_x(x) = \frac{1}{\theta\sqrt{2\pi}} e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$
 
 We are going to use these and put them all together while substituing in the $\mu=0$ and $\sigma^2\frac{1}{2}$ 
 $\displaystyle f_{V_I, V_Q}(V_I, V_Q) = \frac{1}{\sqrt{2\pi\frac{1}{2}}} e^{-\frac{(V_I-0)^2}{2\frac{1}{2}}} \cdot \frac{1}{\sqrt{2\pi\frac{1}{2}}} e^{-\frac{(V_Q-0)^2}{2\frac{1}{2}}}$
@@ -143,9 +150,132 @@ $\displaystyle f_R(r) = \int_0^{2\pi} f_{R, \theta}(r, \theta) d\theta$
 
 ----
 
-Ricean Distribution
+## Ricean Fading
 
-Left off at time index 48:20
+We consider Ricean fading when we have LOS.  What is different is we are going to separate the paths into 2 parts.  One for the LOS path and one for the non-LOS paths.  We are going to use the assumptions from above.  We use the subscript of $0$ to indicate the LOS path.  The first part of the following equation is the  LOS path.  The sum represents the diffuse components.
+
+$\displaystyle v(t) = \alpha_0 e^{j\phi_0(t)} + \sum_{n=1}^{N(t)} \alpha_n(t) e^{j\phi_n(t)}$
+
+The question is, will the $\alpha_0$ component dominate the diffuse components.  We need parameters in order to characterize how strong the LOS path is in relation to the diffuse components.  This is the Ricean Factor
+
+**Ricean Factor**
+$\displaystyle K = \frac{\alpha_0^2}{1 - \alpha_0^2}$
+
+If $K = 0$ then you go to the Raleigh case.
+
+We are going to modify our above formula for $v(t)$
+
+$\displaystyle v(t) = \alpha_0 e^{j\phi_0(t)} + \sqrt{1-\alpha_0^2}\widetilde{v}(t)$
+
+Where $\widetilde{v}(t)$ is the diffuse part and is defined as
+
+$\displaystyle \widetilde{v}(t) = \sum_{n=1}^{N(t)} \frac{\alpha_n}{\sqrt{1-\alpha_0^2}} e^{j\phi_n(t)}$
+
+We did this to that it is normalized.
+
+Now like we did in Rayleigh fading, we are going to go to polar coordinates.  It will be messier.  We start by writing down the real and imaginary parts
+
+$\displaystyle \begin{cases}
+   V_I(t) = \alpha_0 cos(\phi_0(t)) + \sqrt{1-\alpha_0^2}~\widetilde{V_I}(t) \\
+   V_Q(t) = \alpha_0 sin(\phi_0(t)) + \sqrt{1-\alpha_0^2}~\widetilde{V_Q}(t)
+\end{cases}$
+
+What can we say about the distribution of $\widetilde{V_I}(t)$ and $\widetilde{V_Q}(t)$?  What kind of random variables are they?  Just like in the Raley distribution they will follow the normal distribution.  $V_I \sim N(0, \frac{1}{2})$ and $V_Q \sim N(0, \frac{1}{2})$
+
+Like before we want to go from $(V_I, V_Q) \Rightarrow (R, \theta)$ and will need to use the Jacobian to do it.  The big difference here is the line of sight.  It complicates things.  To simplify the problem, we will assume that $\phi_0$ (the angle of the LOS path) is known.  When we get through this all we will find that the conditional PDF for $R,\theta$ is not dependant on $\phi_0$.
+
+What can we now say about the distribution of $V_I(t)$  It no longer has 0 mean like it did in the Rayliegh case becasue the expected value of the summation of 2 random variables always = the sum of the expected values.
+
+$E(X+Y) = E(X) + E(Y)$
+
+Here the Y part is the Rayleigh part which has distribution of $N[0,\frac{1}{2}]$, but the first part has a different $\mu$ that is non-zero.
+
+So, $\displaystyle \LARGE V_{I_{|\phi_0}}$ means $V_I$ for a given $\phi_0$
+
+From the defnition of variance
+
+$var(aX) = a^2var(x)$
+
+$\displaystyle \text{Normal distribution for a given }\phi_0\begin{cases}
+    \displaystyle V_{I_{|\phi_0}} \sim N(\alpha_0cos\phi_0(t), \frac{1}{2}(\sqrt{1-\alpha_0^2})) \\
+    \displaystyle V_{I_{|\phi_0}} \sim N(\alpha_0sin\phi_0(t), \frac{1}{2}(\sqrt{1-\alpha_0^2}))
+\end{cases}$
+
+Now we go into the jacobian.
+
+Recall from above that if we have a random variable $X$ that follows this random distribution $X\sim N(\mu,\sigma^2)$  Then the probability density function is $\displaystyle f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}$ 
+
+We are also going to use the trignometric identity $\cos(x + yY) = \cos(x)\cos(y)+\sin(x)\sin(y)$
+
+Now for the derivation.
+
+
+$$\displaystyle \begin{equation}
+\begin{split}
+   f_{R, \theta_{|\phi_0}}(r, \theta) &= f_{V_I, V_{Q_{|\phi_0}}}(rcos\theta, rsin\theta)  \cdot r\\
+     &= f_{V_I, V_{Q_{|\phi_0}}}(rcos\theta) \cdot f_{V_I, V_{Q_{|\phi_0}}}(rsin\theta) \cdot r \\
+     &= \frac{1}{\sqrt{2\pi(\frac{1-\alpha_0^2}{2})}} e^{-\frac{(rcos\theta-\alpha_0cos\theta_0)^2}{2(\frac{1-\alpha_0^2}{2})}} \cdot \frac{1}{\sqrt{2\pi(\frac{1-\alpha_0^2}{2})}} e^{-\frac{(rsin\theta-\alpha_0sin\theta_0)^2}{2(\frac{1-\alpha_0^2}{2})}} \cdot r \\
+     &= \frac{r}{\pi(1-\alpha_0^2)} e^{-\frac{r^2 + \alpha_0^2 - 2r\alpha_0(cos\theta cos\phi_0 + sin\theta sin\phi_0)}{1-\alpha_0^2}} \\
+     &= \frac{r}{\pi(1-\alpha_0^2)} e^{-\frac{r^2+\alpha_0^2}{1-\alpha_0^2}} e^{\frac{2r\alpha_0}{1-\alpha_0^2}cos(\theta - \phi_0)}
+\end{split}
+\end{equation}$$
+
+Once we have the joint PDF we are going to proceed to calculate the marginal.  To get the marginal PDF we need to average over $\theta$ to get $f_R(r)$
+
+$I_0(x) \int_0^{2\pi}  e^{xcos\theta} d\theta$ is the "zeroth order modified bessel function of the 1st kind".  We will do some funkyness in the following to get to that form.
+
+
+$$\displaystyle \begin{equation}
+\begin{split}
+    f_R(r) &= \int_0^{2\pi} f_{R, \theta_{|\phi_0}}(r, \theta) d\theta \\
+           &= \int_0^{2\pi} \frac{r}{\pi(1-\alpha_0^2)} e^{-\frac{r^2+\alpha_0^2}{1-\alpha_0^2}} e^{\frac{2r\alpha_0}{1-\alpha_0^2}cos(\theta - \phi_0)} d\theta \\
+           &= \frac{r}{\pi(1-\alpha_0^2)} e^{-\frac{r^2+\alpha_0^2}{1-\alpha_0^2}} \int_0^{2\pi}  e^{\frac{2r\alpha_0}{1-\alpha_0^2}cos(\theta - \phi_0)} d\theta \\
+           &= \frac{2r}{(1-\alpha_0^2)} e^{-\frac{r^2+\alpha_0^2}{1-\alpha_0^2}} \frac{1}{2\pi} \int_0^{2\pi}  e^{\frac{2r\alpha_0}{1-\alpha_0^2}cos(\theta - \phi_0)} d\theta \\
+           &= \frac{2r}{(1-\alpha_0^2)} e^{-\frac{r^2+\alpha_0^2}{1-\alpha_0^2}} I_0(\frac{2r\alpha_0}{1-\alpha_0^2}) \\
+\end{split}
+\end{equation}$$
+
+In the step where we dropped the $cos(\theta-\phi_0) \Rightarrow cos(\theta)$ we were integrating theta from $0-2\pi$ which is a full circle.  By rotating by $\theta$, we still have a full circle so we have a minor change of variable here.
+
+----
+
+We want to use matlab to simulate a time varying fading channel.  So how should we do that.
+
+Lets assume $N=16$ and $\alpha_n = \frac{1}{\sqrt{N}}$
+
+$\displaystyle V(t) = \sum_{n=1}^N \alpha_n e^{j\phi_n(t)}$
+
+How do we generate the time varying phase shift $\phi_n(t)$.
+
+$\widehat{\phi_n}$ we indidcates we are now doing a simulation of $\phi_n$.  For each phase you must randomly pick (between $[0,2\pi$ as an initial phase $\psi_n$.  The time varying part 
+
+$\widehat{\phi_n} = \psi_n - 2\pu f_m \cos\theta_n(t)$
+
+Here $\theta_n = \frac{2\pi n}{N} ~~~~~\text{where} N=0,1,2,...,N-1$
+We assume that these are evenly spaced angles.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
