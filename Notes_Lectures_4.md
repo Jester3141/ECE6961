@@ -3,7 +3,7 @@
 ## Defnitions
 
 Tap Delay Line Model
-: TODO
+: $y(t) = \displaystyle \sum_{l=0}^{L-1} x(t-\frac{l}{W}) V_l(t)$
 
 Delay Spread
 : The spread of delays in a system defined as $T_d = T_{ds} = \tau_{max} - \tau_{min}$.  This depends on the environment.  In addition, the lower the frequency, the higher the delay spread.  This is because higher frequencies attenuate more over distance.  In an urban setting a signal at 2g is in the order of a few microseconds ($\mu s$). In an indoor setting, that would be smaller on the order of a few undred of nanoseconds ($ns$)
@@ -138,6 +138,8 @@ Then we can bring out the $f(\tau_n)$ function out of the integral because $\tau
 
 Using this back on our main function we evaluate the sinc fuction at $\tau_n$, then the integral evaluates to 1.
 
+$y(t) = \displaystyle \sum_{l=-\infin}^{\infin} x(t-\frac{l}{W}) V_l(t)$
+
 $y(t) = \displaystyle \sum_{l=-\infin}^{\infin} x(t-\frac{l}{W}) \sum_{n=1}^{n(t)}\alpha_n(t)e^{j\phi_n(t)} sinc(W(\tau_n-\frac{l}{W}))$
 
 The second sum is the $V_l(t)$ tap.
@@ -199,7 +201,7 @@ $\phi_n(t) = -2\pi f_c \tau_n(t)$
 
 This is related to doppler.  Because the receiver is moving, the $\tau_n$ is changing over time in the small scale, that gets amplified by the $f_c$ term for significant changes.  This is a frequency shift because the phase is changing.
 
-Frequency Shift $ = \displaystyle\frac{\phi_n(t-\Delta t) - \phi_n(t)}{(\Delta t)(2\pi)}$  (note we wanted the frequency in Hz which is why we times the denominator by $2\pi$)
+Frequency Shift $ = \displaystyle\frac{\phi_n(t+\Delta t) - \phi_n(t)}{(\Delta t)(2\pi)}$  (note we wanted the frequency in Hz which is why we times the denominator by $2\pi$)
 
 Continued on next lecture.
 
